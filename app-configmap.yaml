@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-secret
+  labels:
+    app: gitbucket
+data:
+  GITBUCKET_DB_URL: jdbc:postgresql://postgres/gitbucket
+  GITBUCKET_DB_USER: gitbucket_user
+  GITBUCKET_DB_PASSWORD: password

@@ -1,0 +1,44 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: app-gitbucket
+  labels:
+    app: gitbucket
+spec:
+  selector:
+    matchLabels:
+      project: gitbucket
+  template:
+    metadata:
+      labels:
+        project: gitbucket
+    spec:
+      containers:
+        - name: app-gitbucket
+          image: gitbucket/gitbucket:latest
+          ports:
+            - containerPort: 8080
+          envFrom:
+          - configMapRef:
+            name: postgres-secret
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: app-gitbucket
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: app-gitbucket
+  minReplicas: 2
+  maxReplicas: 4
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 60
+

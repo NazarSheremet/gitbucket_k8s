@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-gitbucket
+spec:
+  type: LoadBalancer
+  selector:
+    project: gitbucket
+  externalTrafficPolicy: Local
+  sessionAffinity: "ClientIP"
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 240
+  ports:
+  - port: 8080
