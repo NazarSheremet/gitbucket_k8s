@@ -1,4 +1,4 @@
-apiVersion : apps/v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: app-gitbucket
@@ -18,10 +18,15 @@ spec:
           image: gitbucket/gitbucket:latest
           ports:
             - containerPort: 8080
-          envFrom:
-          - configMapRef:
-            name: postgres-secret
+          env:
+            - name: GITBUCKET_DB_URL
+              value: jdbc:postgresql://postgres/gitbucket
+            - name: GITBUCKET_DB_USER
+              value: gitbucket_user
+            - name: GITBUCKET_DB_PASSWORD
+              value: password
 
+              
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -35,10 +40,9 @@ spec:
   minReplicas: 2
   maxReplicas: 4
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 60
-
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 60
